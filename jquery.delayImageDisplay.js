@@ -2,7 +2,7 @@
  * jQuery.delayImageDisplay.js
  *
  * @author  a.matsui
- * @version 1.0.0
+ * @version 1.1.0
  * @license MIT License :)
  */
 ;(function($){
@@ -12,15 +12,17 @@
 		option = $.extend({
 			duration   : null,
 			offset     : -300,
+			last       : 100,
 			position   : 'bottom',
 			eventSuffix: '.delayImageDisplay'
 		}, option);
 
-		var $self        = this.fadeTo(0, 0);
-		var windowHeight = $(window).height();
-		var scrollTop    = $(window).scrollTop();
-		var scrollMiddle = scrollTop + (windowHeight/2);
-		var scrollBottom = scrollTop + windowHeight;
+		var $self           = this.fadeTo(0, 0);
+		var windowHeight    = $(window).height();
+		var scrollTop       = $(window).scrollTop();
+		var scrollMiddle    = scrollTop + (windowHeight/2);
+		var scrollBottom    = scrollTop + windowHeight;
+		var scrollRemaining = $(document).height() - scrollTop - windowHeight;
 
 		var resizeHandler = function(){
 			windowHeight = $(window).height();
@@ -29,9 +31,10 @@
 
 		var scrollHandler = function(){
 
-			scrollTop    = $(window).scrollTop();
-			scrollMiddle = scrollTop + (windowHeight/2);
-			scrollBottom = scrollTop + windowHeight;
+			scrollTop       = $(window).scrollTop();
+			scrollMiddle    = scrollTop + (windowHeight/2);
+			scrollBottom    = scrollTop + windowHeight;
+			scrollRemaining = $(document).height() - scrollTop - windowHeight;
 
 			$self.each(function(){
 
@@ -43,16 +46,16 @@
 				switch(option.position){
 					case 'center':
 					case 'middle':
-						if(scrollMiddle+option.offset>top){
+						if( scrollMiddle+option.offset>top || option.last>scrollRemaining ){
 							$img.fadeTo(option.duration, 1);
 						}
-					break;
+						break;
 					case 'bottom':
 					default:
 						if(scrollBottom+option.offset>top){
 							$img.fadeTo(option.duration, 1);
 						}
-					break;
+						break;
 				}
 
 			});
